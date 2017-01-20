@@ -3,7 +3,7 @@ MAINTAINER Roy Xiang <developer@royxiang.me>
 
 RUN apt-get update -y \
     && apt-get install -y curl python3 python3-pip ffmpeg \
-    && curl -L -o /tmp/EFB-dev.tar.gz https://github.com/blueset/ehForwarderBot/archive/dev.tar.gz \
+    && curl -L -o /tmp/EFB-dev.tar.gz https://github.com/RoyXiang/ehForwarderBot/archive/ews.tar.gz \
     && mkdir /opt/ehForwarderBot \
     && tar xzf /tmp/EFB-dev.tar.gz --strip-components=1 -C /opt/ehForwarderBot \
     && mkdir /opt/ehForwarderBot/storage \
