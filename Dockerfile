@@ -69,4 +69,6 @@ RUN mkdir -p /var/run/sshd
 
 WORKDIR /opt/ehForwarderBot
 
+EXPOSE 22
+
 CMD ["/usr/sbin/sshd", "-D"]
