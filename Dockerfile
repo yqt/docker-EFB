@@ -1,5 +1,5 @@
 FROM alpine
-MAINTAINER Roy Xiang <developer@royxiang.me>
+LABEL maintainer="Roy Xiang <developer@royxiang.me>, hackaday <hackaday@coz.moe>"
 
 ENV LANG C.UTF-8
 
@@ -53,6 +53,20 @@ RUN set -ex \
         && rm -rf /root/.cache \
         && apk del .build-deps
 
+# add openssh and clean
+RUN apk add --no-cache --update openssh
+
+RUN ssh-keygen -f /etc/ssh/ssh_host_rsa_key -N '' -t rsa \
+        && ssh-keygen -f /etc/ssh/ssh_host_dsa_key -N '' -t dsa \
+        && mkdir -p /var/run/sshd
+
+RUN echo 'root:root' | chpasswd
+
+RUN sed -ri 's/^#?PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config \
+        && sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
+RUN mkdir -p /var/run/sshd
+
 WORKDIR /opt/ehForwarderBot
 
-CMD ["python3", "main.py"]
+CMD ["/usr/sbin/sshd", "-D"]
