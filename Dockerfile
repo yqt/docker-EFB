@@ -3,7 +3,7 @@ LABEL maintainer="Roy Xiang <developer@royxiang.me>, hackaday <hackaday@coz.moe>
 
 ENV LANG C.UTF-8
 
-RUN apk add --update --no-cache ca-certificates
+RUN apk add --update --no-cache ca-certificates git
 
 RUN set -ex \
         && apk add --no-cache --virtual .run-deps \
@@ -18,16 +18,10 @@ RUN set -ex \
                   "$(python3 -c 'import certifi; print(certifi.__path__[0])')/cacert.pem"
 
 RUN set -ex \
-        && apk add --update --no-cache --virtual .fetch-deps \
-                curl \
-                tar \
-        && curl -L -o EFB-latest.tar.gz \
-                $(curl -s https://api.github.com/repos/blueset/ehForwarderBot/tags \
-                    | grep tarball_url | head -n 1 | cut -d '"' -f 4) \
-        && mkdir -p /opt/ehForwarderBot/storage \
-        && tar -xzf EFB-latest.tar.gz --strip-components=1 -C /opt/ehForwarderBot \
-        && rm EFB-latest.tar.gz \
-        && apk del .fetch-deps
+        && rm -rf /opt/ehForwarderBot \
+        && mkdir -p /opt/ehForwarderBot \
+        && git clone https://github.com/blueset/ehForwarderBot.git /opt/ehForwarderBot \
+        && mkdir -p /opt/ehForwarderBot/storage
 
 RUN set -ex \
         && pip3 install -r /opt/ehForwarderBot/requirements.txt \
